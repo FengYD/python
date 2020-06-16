@@ -16,23 +16,20 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.svm import SVC
 
 # Loaddataset
-url = "https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data"
-names = ['sepal-length', 'sepal-width','petal-length', 'petal-width','class']
-dataset = read_csv(url, names=names)
-# shape
-print(dataset.shape)
-# head
-print(dataset.head(20))
-# descriptions
-print(dataset.describe())
-# classdistribution
-print(dataset.groupby('class').size())
-# boxand whisker plots
-dataset.plot(kind='box',subplots=True,layout=(2,2), sharex=False, sharey=False)
-pyplot.show()
-# histograms
-dataset.hist()
-pyplot.show()
-# scatter plot matrix
-scatter_matrix(dataset)
-pyplot.show()
+url = "./data.csv"
+dataset = read_csv(url)
+
+# Split-out validation dataset
+array = dataset.values
+X = array[:,1:3]
+y = array[:,0]
+X_train, X_validation, Y_train, Y_validation = train_test_split(X, y, test_size=0.20, random_state=1)
+
+# Make predictions on validation dataset
+model = KNeighborsClassifier()
+model.fit(X_train, Y_train)
+predictions = model.predict(X_validation)
+# Evaluate predictions
+print(accuracy_score(Y_validation, predictions))
+print(confusion_matrix(Y_validation, predictions))
+print(classification_report(Y_validation, predictions))
